@@ -1,0 +1,6 @@
+@WizStore_HostAddress = http://localhost:5107
+
+GET {{WizStore_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
