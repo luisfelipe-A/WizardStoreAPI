@@ -1,27 +1,26 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WizStore.Services;
+using WizStore.Auth;
+using WizStore.Entities;
+using WizStore.Models.Users;
 
 namespace WizStore.Controllers
 {
     [ApiController]
     [Authorize]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class WeatherForecastController(IUserService userService) : ControllerBase
     {
+        private IUserService _userService = userService;
+
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
-        {
-            _logger = logger;
-        }
 
         [AllowAnonymous]
-        [HttpGet(Name = "GetWeatherForecast")]
+        [HttpGet("GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
@@ -33,16 +32,12 @@ namespace WizStore.Controllers
             .ToArray();
         }
 
-        [HttpGet(Name = "GetWeatherForecastAdmin")]
-        public IEnumerable<WeatherForecast> GetAdm()
+        [Authorize(Role.Admin)]
+        [HttpGet("AdministratorsCorner")]
+        public IActionResult AdminnistratorsCorner()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+            var users = _userService.GetAll();
+            return Ok(users);
         }
     }
 }
