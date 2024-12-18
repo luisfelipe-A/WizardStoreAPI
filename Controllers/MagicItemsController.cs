@@ -2,9 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WizStore.Data;
 using WizStore.Entities;
-using WizStore.Services;
 using WizStore.Auth;
-using WizStore.Models.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace WizStore.Controllers
@@ -76,7 +74,7 @@ namespace WizStore.Controllers
                 return NotFound();
             }
 
-            return item;
+            return Ok(item);
         }
 
         // PUT: api/MagicItems/5
