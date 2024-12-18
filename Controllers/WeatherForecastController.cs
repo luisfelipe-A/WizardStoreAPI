@@ -3,6 +3,7 @@ using WizStore.Services;
 using WizStore.Auth;
 using WizStore.Entities;
 using WizStore.Models.Users;
+using WizStore.Models;
 
 namespace WizStore.Controllers
 {
