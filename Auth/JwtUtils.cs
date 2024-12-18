@@ -20,7 +20,7 @@ namespace WizStore.Auth
 
         public string GenerateJwtToken(User user)
         {
-            // generate token that is valid for 7 days
+            // generate token that is valid for 2 days
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor

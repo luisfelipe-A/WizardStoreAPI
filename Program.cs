@@ -26,10 +26,6 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAuthentication();
-
-builder.Services.AddAuthorization();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -52,22 +48,20 @@ app.UseMiddleware<ErrorHandlerMiddleware>();
 // custom jwt auth middleware
 app.UseMiddleware<JwtMiddleware>();
 
-app.MapControllers();
-
-
 
 DataBaseManagmentService.MigrationInitialization(app);
+
 
 //Test users
 var testUsers = new List<User>
 {
-    new( 1, "Admin", "admin", BCrypt.Net.BCrypt.HashPassword("admin"), Role.Admin),
-    new( 2, "Normal User", "normal_user", BCrypt.Net.BCrypt.HashPassword("user"), Role.User)
+    new("Admin", "admin", BCrypt.Net.BCrypt.HashPassword("admin"), Role.Admin),
+    new("Normal User", "normal_user", BCrypt.Net.BCrypt.HashPassword("user"), Role.User)
 };
 
 using var scope = app.Services.CreateScope();
 var dataContext = scope.ServiceProvider.GetRequiredService<DataContext>();
-if (!dataContext.Users.Contains<User>(testUsers.First())) 
+if (!(dataContext.Users.Select(u => u.Username == testUsers.First().Username) == null)) 
 {
     dataContext.Users.AddRange(testUsers);
     dataContext.SaveChanges();
@@ -75,10 +69,6 @@ if (!dataContext.Users.Contains<User>(testUsers.First()))
 
 
 app.UseHttpsRedirection();
-
-app.UseAuthentication();
-
-app.UseAuthorization();
 
 app.MapControllers();
 
